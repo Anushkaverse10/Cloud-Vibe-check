@@ -28,7 +28,8 @@ A modern, aesthetic weather app built using **HTML, CSS & JavaScript** — desig
 
 ## 📸 Preview
 
-<img src="https://via.placeholder.com/800x400" alt="preview" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/0c8c285c-e204-497d-9c9f-a11e34bed003" />
+
 
 ---
 
