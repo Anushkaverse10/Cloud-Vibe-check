@@ -4,7 +4,7 @@ A modern, aesthetic weather app built using **HTML, CSS & JavaScript** — desig
 
 ## 🚀 Live Demo
 
-👉 [View Live](https://your-netlify-link.netlify.app)
+👉 [View Live](https://incandescent-capybara-78e975.netlify.app/)
 
 ---
 
