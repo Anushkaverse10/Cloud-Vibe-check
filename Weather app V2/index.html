@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vibe Check — minimal weather & smart tourist recommendations powered by real-time conditions.">
+    <title>Vibe Check — Weather & Explore</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Particles -->
+    <div id="particles" aria-hidden="true"></div>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="#" class="nav-brand" aria-label="Vibe Check home">
+                <span class="brand-icon" aria-hidden="true">☁️</span>
+                <span class="brand-text">Vibe Check</span>
+            </a>
+            <div class="nav-actions">
+                <button id="tourist-toggle" class="nav-btn nav-btn--tourist" title="Tourist Mode" aria-label="Toggle Tourist Mode">
+                    <span class="material-symbols-rounded">explore</span>
+                </button>
+                <button id="unit-toggle" class="nav-btn" title="Toggle °C / °F" aria-label="Toggle temperature unit">
+                    <span id="unit-label">°C</span>
+                </button>
+                <button id="theme-toggle" class="nav-btn" title="Toggle theme" aria-label="Toggle dark or light mode">
+                    <span class="material-symbols-rounded" id="theme-icon">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== MAIN ========== -->
+    <main class="main">
+        <div class="container">
+
+            <!-- Search -->
+            <section class="search-section" aria-label="Search for a city">
+                <div class="search-box" id="search-box">
+                    <span class="material-symbols-rounded search-prefix" aria-hidden="true">search</span>
+                    <input type="text" id="city-input" placeholder="Search city…" autocomplete="off" aria-label="City name">
+                    <button id="search-btn" aria-label="Search">
+                        <span class="material-symbols-rounded">arrow_forward</span>
+                    </button>
+                    <div class="suggestions hidden" id="suggestions" role="listbox"></div>
+                </div>
+                <button id="location-btn" class="nav-btn" title="Use my location" aria-label="Use my current location">
+                    <span class="material-symbols-rounded">my_location</span>
+                </button>
+            </section>
+
+            <!-- Weather Card -->
+            <section class="card" id="weather-card" aria-label="Weather information">
+
+                <!-- Initial State -->
+                <div class="state state--initial" id="initial-state">
+                    <span class="state-emoji" aria-hidden="true">🌍</span>
+                    <p class="state-title">Search a city to get started</p>
+                    <p class="state-hint">or use the location button</p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="state state--loading hidden" id="loading-state">
+                    <div class="spinner" aria-label="Loading"></div>
+                    <p class="state-title">Fetching weather…</p>
+                </div>
+
+                <!-- Error State -->
+                <div class="state state--error hidden" id="error-state">
+                    <span class="state-emoji" aria-hidden="true">😕</span>
+                    <p class="state-title" id="error-message">City not found</p>
+                    <button class="btn btn--outline" id="retry-btn">Try Again</button>
+                </div>
+
+                <!-- Weather Content -->
+                <div class="weather hidden" id="weather-content">
+
+                    <!-- Hero -->
+                    <div class="weather-hero">
+                        <div class="hero-icon-wrap">
+                            <span class="hero-icon" id="weather-icon" aria-hidden="true">☀️</span>
+                            <div class="hero-glow" id="icon-glow" aria-hidden="true"></div>
+                        </div>
+                        <div class="hero-temp">
+                            <span class="hero-temp-value" id="temperature">--</span>
+                            <span class="hero-temp-unit" id="degree-unit">°C</span>
+                        </div>
+                        <p class="hero-desc" id="description">--</p>
+                        <div class="hero-hilo">
+                            <span class="hi" id="temp-high">H: --°</span>
+                            <span class="sep" aria-hidden="true">/</span>
+                            <span class="lo" id="temp-low">L: --°</span>
+                        </div>
+                    </div>
+
+                    <!-- Location bar -->
+                    <div class="location-bar">
+                        <h2 class="location-name" id="city-name">--</h2>
+                        <p class="location-date" id="date-time">--</p>
+                    </div>
+
+                    <!-- Detail grid -->
+                    <div class="details-grid">
+                        <div class="detail">
+                            <span class="detail-emoji" aria-hidden="true">💨</span>
+                            <span class="detail-val" id="wind">--</span>
+                            <span class="detail-lbl">Wind</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-emoji" aria-hidden="true">💧</span>
+                            <span class="detail-val" id="humidity">--</span>
+                            <span class="detail-lbl">Humidity</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-emoji" aria-hidden="true">👁️</span>
+                            <span class="detail-val" id="visibility">--</span>
+                            <span class="detail-lbl">Visibility</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-emoji" aria-hidden="true">🌡️</span>
+                            <span class="detail-val" id="feels-like">--</span>
+                            <span class="detail-lbl">Feels Like</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-emoji" aria-hidden="true">🔵</span>
+                            <span class="detail-val" id="pressure">--</span>
+                            <span class="detail-lbl">Pressure</span>
+                        </div>
+                        <div class="detail">
+                            <span class="detail-emoji" aria-hidden="true">☁️</span>
+                            <span class="detail-val" id="clouds">--</span>
+                            <span class="detail-lbl">Clouds</span>
+                        </div>
+                    </div>
+
+                    <!-- Sunrise / Sunset -->
+                    <div class="sun-row">
+                        <div class="sun-item">
+                            <span class="material-symbols-rounded sun-icon sun-icon--rise" aria-hidden="true">wb_twilight</span>
+                            <div>
+                                <span class="sun-lbl">Sunrise</span>
+                                <span class="sun-val" id="sunrise">--</span>
+                            </div>
+                        </div>
+                        <div class="sun-arc">
+                            <div class="sun-arc-track">
+                                <div class="sun-arc-fill" id="sun-arc-fill"></div>
+                                <div class="sun-arc-dot" id="sun-arc-dot"></div>
+                            </div>
+                        </div>
+                        <div class="sun-item">
+                            <span class="material-symbols-rounded sun-icon sun-icon--set" aria-hidden="true">wb_twilight</span>
+                            <div>
+                                <span class="sun-lbl">Sunset</span>
+                                <span class="sun-val" id="sunset">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hourly -->
+                    <div class="forecast-block">
+                        <h3 class="forecast-title">Hourly</h3>
+                        <div class="hourly-scroll" id="hourly-forecast"></div>
+                    </div>
+
+                    <!-- 5-day -->
+                    <div class="forecast-block">
+                        <h3 class="forecast-title">5-Day Forecast</h3>
+                        <div class="daily-list" id="daily-forecast"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== TOURIST MODE PANEL ========== -->
+            <section class="tourist-panel hidden" id="tourist-panel" aria-label="Tourist recommendations">
+                <div class="tourist-header">
+                    <div class="tourist-title-row">
+                        <span class="material-symbols-rounded tourist-title-icon">explore</span>
+                        <h2 class="tourist-title">Explore Nearby</h2>
+                    </div>
+                    <p class="tourist-subtitle" id="tourist-subtitle">Weather-smart recommendations based on current conditions</p>
+                </div>
+
+                <!-- Weather Context Chip -->
+                <div class="weather-chip" id="weather-chip">
+                    <span class="chip-icon" id="chip-icon">☀️</span>
+                    <span class="chip-text" id="chip-text">Loading conditions…</span>
+                </div>
+
+                <!-- Tourist Loading -->
+                <div class="tourist-loading" id="tourist-loading">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+
+                <!-- Tourist Error -->
+                <div class="tourist-error hidden" id="tourist-error">
+                    <span class="material-symbols-rounded">location_off</span>
+                    <p id="tourist-error-msg">Could not load recommendations</p>
+                    <button class="btn btn--outline" id="tourist-retry-btn">Retry</button>
+                </div>
+
+                <!-- Tourist Results -->
+                <div class="tourist-results hidden" id="tourist-results">
+                    <div class="tourist-grid" id="tourist-grid"></div>
+                </div>
+
+                <!-- No Results State -->
+                <div class="tourist-empty hidden" id="tourist-empty">
+                    <span class="material-symbols-rounded">sentiment_neutral</span>
+                    <p>No matching places found nearby. Try a different location!</p>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>Made with 💜 by <span class="footer-name">Anushka</span></p>
+            </footer>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script src="tourist.js"></script>
+</body>
+
+</html>
